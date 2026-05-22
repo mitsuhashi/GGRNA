@@ -45,6 +45,8 @@ podman-compose logs web
 
 上記を実行すると `~/.config/systemd/user/podman-compose-ggrna.service` が作成され、`podman-compose.yml` のサービスが現在のユーザーの systemd サービスとして有効化・起動されます。
 
+OS 再起動後にログイン前から起動できるよう、スクリプトは `loginctl enable-linger $USER` を可能な場合に実行します。権限不足などで有効化できない場合は警告が表示されるため、必要に応じて同じコマンドを一度実行してください。生成される systemd サービスには Podman 起動可能状態の事前確認と失敗時の自動再試行が含まれます。
+
 状態確認:
 
 ```sh
