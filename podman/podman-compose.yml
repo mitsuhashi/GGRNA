@@ -1,0 +1,14 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: podman/apache/Dockerfile
+    ports:
+      - ${APACHE_PORT:-80}:80
+    logging:
+      driver: k8s-file
+      options:
+        max-size: 10m
+    restart: unless-stopped
+    volumes:
+      - ../:/var/www/html:ro
