@@ -1,0 +1,11 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: podman_ggrna/apache/Dockerfile
+    ports:
+      - ${APACHE_PORT:-80}:80
+    restart: always
+    init: true
+    volumes:
+      - ../:/var/www/html:ro
