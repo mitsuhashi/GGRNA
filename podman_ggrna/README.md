@@ -31,6 +31,34 @@ curl -I http://localhost:30082/help.html
 curl -I http://localhost:30082/en/advanced.html
 ```
 
+`apache/000-default.conf` では、Apache の MultiViews が `index.cgi.en` / `index.cgi.ja` を選択する前に、クエリパラメータ付きURLを正規URLへリダイレクトします。リバースプロキシが `X-Forwarded-Proto: https` を付与する場合は、リダイレクト先も `https://` になります。
+
+正規化リダイレクトの確認:
+
+```sh
+curl -I http://localhost:30082/ja/?lang=en
+curl -I http://localhost:30082/?spe=hs
+curl -I 'http://localhost:30082/ja/caagaagagattg?lang=en&spe=mm&format=txt'
+curl -I http://localhost:30082/en/mm/caagaagagattg.txt
+curl -I -H 'X-Forwarded-Proto: https' \
+  'http://localhost:30082/ja/caagaagagattg?lang=en&spe=mm&format=txt'
+```
+
+期待される結果:
+
+```text
+/ja/?lang=en -> /en/
+/?spe=hs -> /hs/
+/ja/caagaagagattg?lang=en&spe=mm&format=txt -> /en/mm/caagaagagattg.txt
+/en/mm/caagaagagattg.txt -> 200 OK, text/plain
+```
+
+Apache設定の構文確認:
+
+```sh
+podman exec podman_ggrna_web_1 apache2ctl configtest
+```
+
 停止:
 
 ```sh
